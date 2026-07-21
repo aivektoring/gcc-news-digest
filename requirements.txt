@@ -1,2 +1,2 @@
 feedparser==6.0.10
-google-translate-extended==1.3.5
+googletrans==4.0.0
