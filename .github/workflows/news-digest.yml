@@ -1,0 +1,39 @@
+name: GCC News Digest
+
+on:
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+jobs:
+  news-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install feedparser google-translate-extended
+
+      - name: Run news digest
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: python news_digest.py
+
+      - name: Log success
+        if: success()
+        run: echo "✅ GCC News Digest sikeresen futott"
+
+      - name: Log error
+        if: failure()
+        run: echo "❌ GCC News Digest hiba"
